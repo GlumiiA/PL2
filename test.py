@@ -5,8 +5,7 @@ import subprocess
 class Test(unittest.TestCase):
 
     def run_program(self, input_data):
-        paths = ['./main']
-        result = subprocess.run(paths, input=input_data, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        result = subprocess.run(['./program'], input=input_data, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         return result
 
     def test_first(self):
