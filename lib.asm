@@ -2,6 +2,7 @@ section .text
 global exit
 global string_length
 global print_string
+global print_err
 global print_char
 global print_newline
 global print_uint
@@ -42,6 +43,17 @@ print_string:
     mov rax, 1 ; write
     syscall
 
+    ret
+
+print_err:
+    push rdi
+    call string_length
+    pop rdi
+    mov rdx, rax ; длина соо об ошибке
+    mov rax, 1
+    mov rsi, rdi
+    mov rdi, 2 ; stderr
+    syscall
     ret
 
 ; Принимает код символа и выводит его в stdout
