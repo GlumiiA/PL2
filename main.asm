@@ -7,8 +7,8 @@
 %define SYS_READ, 0
 
 section .data
-message_error_find: db "dictionary entry not found", 10
-message_error_read: db "string is empty", 10
+message_error_find: db "dictionary entry not found", 10, 0
+message_error_read: db "string is empty", 10, 0
 
 section .text
 
