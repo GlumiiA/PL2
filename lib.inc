@@ -1,6 +1,7 @@
 extern exit
 extern string_length
 extern print_string
+extern print_err
 extern print_char
 extern print_newline
 extern print_uint
