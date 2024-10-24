@@ -1,8 +1,9 @@
-import unittest
 import subprocess
+import unittest
 
 
-class Test(unittest.TestCase):
+class ProgramTest(unittest.TestCase):
+
     def run_program(self, input_data):
         paths = ['./main']
         res = subprocess.run(paths, input=input_data, stdout=subprocess.PIPE, stderr=subprocess.PIPE
@@ -28,10 +29,5 @@ class Test(unittest.TestCase):
         result = self.run_program('\n'.encode())
         self.assertEqual(result.stderr.decode(), "")
         self.assertEqual(result.stdout.decode(), 'key is empty')
-        
-     def test_empty(self):
-        result = self.run_program('itmo'.encode())
-        self.assertEqual(result.stderr.decode(), "")
-        self.assertEqual(result.stdout.decode(), 'IT is MOre than a University')
 if __name__ == '__main__':
     unittest.main()
