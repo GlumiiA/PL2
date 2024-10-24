@@ -27,7 +27,7 @@ _start:
 	mov byte [rsp + rax - 1], 0 	; заменяем '\n' в конце прочитанной строки на 0-терм
 	
 	mov rdi, rsp
-	mov rsi, PREVIOUS
+	mov rsi, DICT_BEGIN
 	call find_word					; поиск ключа в словаре
 	
 	test rax, rax
