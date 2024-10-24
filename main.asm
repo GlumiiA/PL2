@@ -27,6 +27,7 @@ _start:
     mov rsi, rsp
     mov rdx, SIZE_BUFFER
     syscall
+    mov byte [rsp + rax - 1], 0 
     test rax, rax ; если кол-во прочитанных символов 0, то выход
     jz .not_read
     mov rdi, r12 ; Указатель на нуль-терминированную строку.
