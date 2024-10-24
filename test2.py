@@ -26,7 +26,7 @@ class ProgramTest(unittest.TestCase):
         self.assertEqual(result.stdout.decode(), 'third         word')
         
     def test_empty(self):
-        result = self.run_program('\n')
+        result = self.run_program('\n'.encode())
         self.assertEqual(result.stderr.decode(), "")
         self.assertEqual(result.stdout.decode(), 'key is empty')
 if __name__ == '__main__':
