@@ -16,9 +16,9 @@ class ProgramTest(unittest.TestCase):
         self.assertEqual(result.stdout.decode(), 'simple text\x01')
 
     def test_second(self):
-        result = self.run_program('Chipi\n'.encode())
+        result = self.run_program('second\n'.encode())
         self.assertEqual(result.stderr.decode(), "")
-        self.assertEqual(result.stdout.decode(), 'Chipi chipi chapa chapa\x01')
+        self.assertEqual(result.stdout.decode(), 'на русском\x01')
 
     def test_empty(self):
         result = self.run_program('\n'.encode())
