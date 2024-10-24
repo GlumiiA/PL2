@@ -46,14 +46,12 @@ print_string:
     ret
 
 print_err:
-    push rdi
-    call string_length
-    pop rdi
-    mov rdx, rax ; длина соо об ошибке
-    mov rax, 1
+    call string_length				; вычисление длины сообщения об ошибке
+	   mov rdx, rax
     mov rsi, rdi
-    mov rdi, 2 ; stderr
-    syscall
+	   mov rdi, 2
+	   mov rax, 1
+	   syscall
     ret
 
 ; Принимает код символа и выводит его в stdout
