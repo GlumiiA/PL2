@@ -21,9 +21,9 @@ class ProgramTest(unittest.TestCase):
         self.assertEqual(result.stdout.decode(), 'на русском\x01')
 
     def test_empty(self):
-        result = self.run_program('\n'.encode())
+        result = self.run_program('third\n'.encode())
         self.assertEqual(result.stderr.decode(), "")
-        self.assertEqual(result.stdout.decode(), 'Key incorrect\n')
+        self.assertEqual(result.stdout.decode(), 'third         word\n')
 
 
 if __name__ == '__main__':
