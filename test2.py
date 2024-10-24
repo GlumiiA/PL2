@@ -9,16 +9,20 @@ class ProgramTest(unittest.TestCase):
         res = subprocess.run(paths, input=input_data, stdout=subprocess.PIPE, stderr=subprocess.PIPE
         )
         return res
-
     def test_first(self):
-        result = self.run_program('Gg\n'.encode())
+        result = self.run_program('first\n')
         self.assertEqual(result.stderr.decode(), "")
-        self.assertEqual(result.stdout.decode(), 'GoodGame\x01')
+        self.assertEqual(result.stdout.decode(), 'simple text\x01')
 
     def test_second(self):
-        result = self.run_program('Chipi\n'.encode())
+        result = self.run_program('second\n')
         self.assertEqual(result.stderr.decode(), "")
-        self.assertEqual(result.stdout.decode(), 'Chipi chipi chapa chapa\x01')
+        self.assertEqual(result.stdout.decode(), 'на русском\x01')
+
+    def test_third(self):
+        result = self.run_program('third\n')
+        self.assertEqual(result.stderr.decode(), "")
+        self.assertEqual(result.stdout.decode(), 'third         word\x01')
 
     def test_empty(self):
         result = self.run_program('\n'.encode())
