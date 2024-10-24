@@ -28,5 +28,10 @@ class Test(unittest.TestCase):
         result = self.run_program('\n'.encode())
         self.assertEqual(result.stderr.decode(), "")
         self.assertEqual(result.stdout.decode(), 'key is empty')
+        
+     def test_empty(self):
+        result = self.run_program('itmo'.encode())
+        self.assertEqual(result.stderr.decode(), "")
+        self.assertEqual(result.stdout.decode(), 'IT's MOre than a University')
 if __name__ == '__main__':
     unittest.main()
