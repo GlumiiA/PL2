@@ -29,9 +29,3 @@ find_word:
 .end: 
 	mov rax, rsi			 
 	ret
-
-	
-.end: 
-	mov rax, rsi			 
-	ret
-
