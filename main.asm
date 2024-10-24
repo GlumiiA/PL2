@@ -20,7 +20,6 @@ _start:
 ; Иначе выдает сообщение об ошибке.
 .read_string:
     sub rsp, SIZE_BUFFER ; выделения места на стеке для строки
-    mov r12, rsp
     sub rsp, 8 ; выравниваем стек
     mov rax, SYS_READ
     mov rdi, STDIN
@@ -28,7 +27,7 @@ _start:
     mov rdx, SIZE_BUFFER
     syscall
     mov byte [rsp + rax - 1], 0 
-    mov rdi, r12 ; Указатель на нуль-терминированную строку.
+    mov rdi, rsp ; Указатель на нуль-терминированную строку.
     mov rsi, DICT_BEGIN ; Указатель на начало словаря.
     call find_word
     test rax, rax ; если не нашёл
