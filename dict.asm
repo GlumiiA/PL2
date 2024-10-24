@@ -10,30 +10,30 @@ global find_word
 find_word:
     sub rsp, 8 ; выравниваем стек
 .loop:
-    push rdi ; сохраняем rdi
-    push rsi ; сохраняем rsi
+    push rdi 
+    push rsi 
 
-    test rsi, rsi ; проверяем указатель словаря
-    jz .out ; если ноль, переходим к метке .out
+    test rsi, rsi ; 
+    jz .out 
 
     lea rsi, [rsi + 8] ; получаем адрес следующего элемента
-    call string_equals ; вызываем функцию сравнения строк
+    call string_equals 
 
-    pop rsi ; восстанавливаем значение rsi
-    pop rdi ; восстанавливаем значение rdi
+    pop rsi 
+    pop rdi 
 
     cmp rax, 1 ; проверяем результат
     je .end ; если нашли ключ, переходим к .end
 
     mov rsi, [rsi] ; переходим к следующему элементу
-    jmp .loop ; повторяем цикл
+    jmp .loop 
 
 .end:
-    add rsp, 8 ; восстанавливаем стек
-    mov rax, rsi ; возвращаем адрес найденного слова
+    add rsp, 8 
+    mov rax, rsi 
     ret
 
 .out:
     add rsp, 8 ; восстанавливаем стек
-    xor rax, rax ; возвращаем 0
+    xor rax, rax 
     ret
