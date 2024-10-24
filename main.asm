@@ -2,9 +2,9 @@
 %include "lib.inc"
 %include "dict.inc"
 
-%define SIZE_BUFFER, 256 ; Читает строку размером не более 255 символов + нуль-терминант
-%define STDIN, 0
-%define SYS_READ, 0
+%define SIZE_BUFFER 256 ; Читает строку размером не более 255 символов + нуль-терминант
+%define STDIN 0
+%define SYS_READ 0
 
 section .data
 message_error_find: db "dictionary entry not found", 10, 0
