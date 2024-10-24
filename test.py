@@ -32,6 +32,6 @@ class Test(unittest.TestCase):
      def test_empty(self):
         result = self.run_program('itmo'.encode())
         self.assertEqual(result.stderr.decode(), "")
-        self.assertEqual(result.stdout.decode(), 'IT\'s MOre than a University')
+        self.assertEqual(result.stdout.decode(), 'IT is MOre than a University')
 if __name__ == '__main__':
     unittest.main()
