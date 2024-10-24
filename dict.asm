@@ -1,3 +1,4 @@
+%include "lib.inc"
 section .text
 global find_word
 
@@ -18,9 +19,9 @@ sub rsp, 8 ; выравниваем стек
     pop rsi
     pop rdi
     cmp rax, 1 
-	je .end ; значит нашли нужный ключ и можно выходить
-	mov rsi, [rsi] ; адрес следущего элемента
-	jmp .loop
+    je .end ; значит нашли нужный ключ и можно выходить
+    mov rsi, [rsi] ; адрес следущего элемента
+    jmp .loop
 .end
     add rsp, 8
     mov rax, rsi
