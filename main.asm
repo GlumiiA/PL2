@@ -1,3 +1,12 @@
+%include "words.inc"
+%include "lib.inc"
+%include "dict.inc"
+
+%define SIZE_BUFFER 256 ; Читает строку размером не более 255 символов + нуль-терминант
+%define STDIN 0
+%define SYS_READ 0
+
+section .data
 message_error_find: db "dictionary entry not found", 10, 0
 message_error_read: db "string is empty", 10, 0
 
@@ -28,7 +37,7 @@ _start:
 .print_string:
     lea rdi, [rdi + 8]
     call string_length
-    lea rdi, [rdi + 8 + rax + 1]
+    lea rdi, [rdi + rax + 8 + 1]
     ; значение по ключю в rdi
     call print_string
     jmp .exit
@@ -44,3 +53,4 @@ _start:
     add rsp, SIZE_BUFFER
     xor rdi, rdi
     call exit
+
