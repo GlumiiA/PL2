@@ -8,25 +8,32 @@ global find_word
 ; Пройдёт по всему словарю в поисках подходящего ключа. Если подходящее вхождение найдено, вернёт 
 ; адрес начала вхождения в словарь (не значения), иначе вернёт 0.
 find_word:
-sub rsp, 8 ; выравниваем стек
-.loop
-    push rdi ; 16
-    push rsi ; 8
-    test rsi, rsi
-    jz .end
-    lea rsi, [rsi+8]
-    call string_equals
-    pop rsi
-    pop rdi
-    cmp rax, 1 
-    je .end ; значит нашли нужный ключ и можно выходить
-    mov rsi, [rsi] ; адрес следущего элемента
-    jmp .loop
-.end
-    add rsp, 8
-    mov rax, rsi
+    sub rsp, 8 ; выравниваем стек
+.loop:
+    push rdi ; сохраняем rdi
+    push rsi ; сохраняем rsi
+
+    test rsi, rsi ; проверяем указатель словаря
+    jz .out ; если ноль, переходим к метке .out
+
+    lea rsi, [rsi + 8] ; получаем адрес следующего элемента
+    call string_equals ; вызываем функцию сравнения строк
+
+    pop rsi ; восстанавливаем значение rsi
+    pop rdi ; восстанавливаем значение rdi
+
+    cmp rax, 1 ; проверяем результат
+    je .end ; если нашли ключ, переходим к .end
+
+    mov rsi, [rsi] ; переходим к следующему элементу
+    jmp .loop ; повторяем цикл
+
+.end:
+    add rsp, 8 ; восстанавливаем стек
+    mov rax, rsi ; возвращаем адрес найденного слова
     ret
-.out
-    add rsp, 8
-    xor rax, rax
+
+.out:
+    add rsp, 8 ; восстанавливаем стек
+    xor rax, rax ; возвращаем 0
     ret
