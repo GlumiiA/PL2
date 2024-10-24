@@ -11,22 +11,22 @@ class ProgramTest(unittest.TestCase):
         return res
 
     def test_first(self):
-        result = self.run_program('first'.encode())
+        result = self.run_program('first\n'.encode())
         self.assertEqual(result.stderr.decode(), "")
         self.assertEqual(result.stdout.decode(), 'simple text')
 
     def test_second(self):
-        result = self.run_program('second'.encode())
+        result = self.run_program('second\n'.encode())
         self.assertEqual(result.stderr.decode(), "")
         self.assertEqual(result.stdout.decode(), 'на русском')
 
     def test_third(self):
-        result = self.run_program('third'.encode())
+        result = self.run_program('third\n'.encode())
         self.assertEqual(result.stderr.decode(), "")
         self.assertEqual(result.stdout.decode(), 'third         word')
         
     def test_empty(self):
-        result = self.run_program(''.encode())
+        result = self.run_program('\n'.encode())
         self.assertEqual(result.stderr.decode(), "")
         self.assertEqual(result.stdout.decode(), 'key is empty')
 if __name__ == '__main__':
