@@ -28,17 +28,16 @@ _start:
     mov rdx, SIZE_BUFFER
     syscall
     mov byte [rsp + rax - 1], 0 
-    test rax, rax ; если кол-во прочитанных символов 0, то выход
-    jz .not_read
     mov rdi, r12 ; Указатель на нуль-терминированную строку.
     mov rsi, DICT_BEGIN ; Указатель на начало словаря.
     call find_word
     test rax, rax ; если не нашёл
     jz .not_find
 .print_string:
-    lea rdi, [rdi + 8]
+    mov r13, rax
+    lea rdi, [rax + 8]
     call string_length
-    lea rdi, [rdi + rax + 8 + 1]
+    lea rdi, [r13 + rax + 8 + 1]
     ; значение по ключю в rdi
     call print_string
     jmp .exit
