@@ -11,9 +11,9 @@ class ProgramTest(unittest.TestCase):
         return res
 
     def test_first(self):
-        result = self.run_program('Gg\n'.encode())
+        result = self.run_program('first\n'.encode())
         self.assertEqual(result.stderr.decode(), "")
-        self.assertEqual(result.stdout.decode(), 'GoodGame\x01')
+        self.assertEqual(result.stdout.decode(), 'simple text\x01')
 
     def test_second(self):
         result = self.run_program('Chipi\n'.encode())
