@@ -10,6 +10,7 @@ section .rodata
 section .data
 message_error_find: db "dictionary entry not found", "\n", 0
 message_error_read: db "string is empty", "\n", 0
+message_hello: db "Hello! Enter the key: ", "\n", 0
 
 section .text
 
@@ -19,6 +20,11 @@ _start:
 ;Читает строку размером не более 255 символов в буфер с stdin.
 ; Пытается найти вхождение в словаре; если оно найдено, распечатывает в stdout значение по этому ключу.
 ; Иначе выдает сообщение об ошибке.
+mov rdi, message_hello
+sub rsp, 8
+call print_string
+add rsp, 8
+
 .reading:
     sub rsp, SIZE_BUFFER ; выделения места на стеке для строки
     mov rdi, rsp
@@ -46,6 +52,8 @@ _start:
     call print_err
     jmp .exit
 .not_find:
+    mov rdi, message_hello
+    call print_string
     mov rdi, message_error_find
     call print_err
 .exit:
