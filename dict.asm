@@ -1,3 +1,5 @@
+%include "lib.inc"
+
 section .text
 global find_word
 
