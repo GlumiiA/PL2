@@ -12,6 +12,7 @@ global find_word
 find_word:
     push rdi
     push rsi
+
 .loop:
     lea rsi, [rsi + 8]
     sub rsp, 8
