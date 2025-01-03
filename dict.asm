@@ -1,3 +1,7 @@
+%include "lib.inc"
+section .text
+global find_word
+
 find_word:
 
 .loop:
