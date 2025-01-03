@@ -207,7 +207,7 @@ read_word:
     .buffer_overflow:
         xor rdx, rdx
         xor rax, rax 
-    .finally
+    .finally:
         pop r14
         pop r13
         pop r12
