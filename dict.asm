@@ -27,7 +27,7 @@ find_word:
     jmp .loop
 
 .found:
-    mov rax, [rsi]
+    mov rax, rsi
     pop rdi
     pop rsi
     ret
