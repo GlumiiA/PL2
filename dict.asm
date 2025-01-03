@@ -12,7 +12,7 @@ global find_word
 find_word:
     push rdi
     push rsi
-.loop:
+
     lea rsi, [rsi + 8]
     sub rsp, 8
     call string_equals
@@ -26,6 +26,6 @@ find_word:
 .skip:
     mov rsi, [rsi]
     test rsi, rsi
-    jnz .loop
+    jnz find_word
     xor rax, rax
     ret
