@@ -1,45 +1,29 @@
-%include "lib.inc"
-
-section .text
-global find_word
-
 find_word:
-    ; Сохраняем регистры
-    push rdi
-    push rsi
-    push rdx
 
 .loop:
-    ; Проверяем, не нулевой ли указатель на текущий элемент
-    test rsi, rsi
-    jz .not_found
-
-    ; Вызываем функцию сравнения строк
-    sub rsp, 8   ; Выравниваем стек перед вызовом
-    lea rdi, [rsi]  ; Указываем на текущий элемент
-    call string_equals
-    add rsp, 8   ; Восстанавливаем стек
-
-    ; Проверяем результат сравнения
-    cmp rax, 1   ; Проверяем, равно ли возвращаемое значение единице
+    push rdi
+    push rsi
+    add rsi, 8  ; pointer to null-terminated string in rdi, beginning of dictionary in rsi
+    sub rsp, 8
+    call string_equals 
+    add rsp, 8
+    pop rsi
+    pop rdi
+    cmp rax, 1
     je .found
-
-    ; Если не найдено, переходим к следующему элементу
-    mov rsi, [rsi] ; Получаем адрес следующего элемента
+    mov rsi, [rsi] ; load the address of the next string in the dictionary -> rsi
+    cmp rsi, 0 ; 0 is the edn of dictionary
+    je .not_found
     jmp .loop
 
 .found:
-    ; Если найдено, восстанавливаем регистры и возвращаем адрес
-    pop rdx
-    pop rsi
-    pop rdi
-    mov rax, rdi ; Возвращаем адрес найденного слова
+    sub rsp, 8
+    call string_length 
+    add rsp, 8
+    add rax, rsi
+    add rax, 9 ; 8 for the next character and 1 for null terminator
     ret
 
 .not_found:
-    ; Восстанавливаем регистры и возвращаем 0, если слово не найдено
-    pop rdx
-    pop rsi
-    pop rdi
-    xor rax, rax ; Устанавливаем rax в 0
+    mov rax, 0
     ret
