@@ -12,13 +12,11 @@ global find_word
 find_word:
     push rdi
     push rsi
-
+.loop:
     lea rsi, [rsi + 8]
     sub rsp, 8
     call string_equals
     add rsp, 8
-    pop rsi
-    pop rdi
     cmp rax, 1
     jne .skip
     mov rax, rsi
@@ -26,6 +24,9 @@ find_word:
 .skip:
     mov rsi, [rsi]
     test rsi, rsi
-    jnz find_word
+    jnz .loop
     xor rax, rax
+.exit:
+    pop rsi
+    pop rdi
     ret
