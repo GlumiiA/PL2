@@ -55,13 +55,17 @@ print_string:
     ret
 
 print_err:
-    sub rsp, 8 
-    call string_length              ; вычисление длины сообщения об ошибке
-    add rsp, 8 
+    push rdi           
+    call string_length
+    pop rdi
     mov rdx, rax
+    mov rax, SYS_WRITE
     mov rsi, rdi
     mov rdi, STDERR
-    mov rax, SYS_WRITE
+    syscall
+
+    ret
+
 
 ; Принимает код символа и выводит его в stdout
 print_char:
