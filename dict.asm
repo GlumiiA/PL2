@@ -4,26 +4,26 @@ section .text
 
 global find_word
 
-; В rdi - адрес нуль-терминированной строки
-; В rsi - адрес начала словаря
+; Принимает два аргумента:
+; Указатель на нуль-терминированную строку.
+; Указатель на начало словаря.
+; Пройдёт по всему словарю в поисках подходящего ключа. Если подходящее вхождение найдено, вернёт
+; адрес начала вхождения в словарь (не значения), иначе вернёт 0.
 find_word:
     push rsi
     push rdi
     
 .loop:
-    mov rax, [rsi]
-    test rax, rax
+    test rsi, rsi
     jz .not_found
 
-    push rax
-    mov rdi, rax
+    lea rdi, [rsi]
     call string_equals
-    pop rax
 
     cmp rax, 1
     je .found
 
-    add rsi, 8
+    lea rsi, [rsi + 8]
     jmp .loop
 
 .found:
