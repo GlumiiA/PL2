@@ -17,13 +17,12 @@ find_word:
     test rsi, rsi
     jz .not_found
 
-    lea rdi, [rsi]
+    lea rsi, [rsi + 8]
     call string_equals
 
     cmp rax, 1
     je .found
 
-    lea rsi, [rsi + 8]
     jmp .loop
 
 .found:
