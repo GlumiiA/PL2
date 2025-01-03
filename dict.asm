@@ -13,7 +13,7 @@ find_word:
     push rdi
     push rsi
 
-.loop:
+.loopik:
     lea rsi, [rsi + 8]
     sub rsp, 8
     call string_equals
@@ -25,7 +25,7 @@ find_word:
 .skip:
     mov rsi, [rsi]
     test rsi, rsi
-    jnz .loop
+    jnz .loopik
     xor rax, rax
 .exit:
     pop rsi
