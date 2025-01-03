@@ -1,24 +1,33 @@
+section .rodata
+%define SYS_EXIT 60
+%define SYS_READ 0
+%define SYS_WRITE 1
+%define STDIN 0
+%define STDOUT 1
+%define STDERR 2
+
 section .text
 global exit
 global string_length
 global print_string
-global print_err
+global print_string_error
 global print_char
 global print_newline
 global print_uint
 global print_int
+global print_err
 global string_equals
 global read_char
 global read_word
+global read_string
 global parse_uint
 global parse_int
 global string_copy
+
  
 ; Принимает код возврата и завершает текущий процесс
 exit:
-    xor rax, rax
-    mov     rax, 60                         ; номер системного вызова 'exit'
-    xor     rdi, rdi    
+    mov     rax, SYS_EXIT                        ; номер системного вызова 'exit' 
     syscall 
 
 ; Принимает указатель на нуль-терминированную строку, возвращает её длину
@@ -38,29 +47,29 @@ print_string:
     call string_length 
     pop rdi;
     mov rsi, rdi
-    mov rdi, 1 ; stdout
+    mov rdi, STDOUT ; stdout
     mov rdx, rax ; длина строки
-    mov rax, 1 ; write
+    mov rax, SYS_WRITE ; write
     syscall
 
     ret
 
 print_err:
-    call string_length				; вычисление длины сообщения об ошибке
-	   mov rdx, rax
+    sub rsp, 8 
+    call string_length              ; вычисление длины сообщения об ошибке
+    add rsp, 8 
+    mov rdx, rax
     mov rsi, rdi
-	   mov rdi, 2
-	   mov rax, 1
-	   syscall
-    ret
+    mov rdi, STDERR
+    mov rax, SYS_WRITE
 
 ; Принимает код символа и выводит его в stdout
 print_char:
     push rdi     
     mov rsi, rsp        
     mov rdx, 1
-    mov rax, 1 ; write
-    mov rdi, 1 ; stdout 
+    mov rax, SYS_WRITE ; write
+    mov rdi, STDOUT ; stdout 
     syscall
     pop rdi
 
@@ -68,13 +77,8 @@ print_char:
 
 ; Переводит строку (выводит символ с кодом 0xA)
 print_newline:
-    mov rax, 1 ; write
-    mov rdi, 1 ; stdout
-    mov rsi, rsp
-    mov byte [rsp], 0xA
-    mov rdx, 1
-    syscall
-    ret
+    mov rdi, '\n'
+    jmp print_char 
 
 ; Выводит беззнаковое 8-байтовое число в десятичном формате 
 ; Совет: выделите место в стеке и храните там результаты деления
@@ -146,11 +150,11 @@ string_equals:
 
 ; Читает один символ из stdin и возвращает его. Возвращает 0 если достигнут конец потока
 read_char:  
-    push 0  ; выделяем место на стеке для символа
+    push 0  ; выделяем место на стеке
     mov rdx, 1 ; длина
-    mov rdi, 0 ; stdin (0)  
+    mov rdi, STDIN  ; stdin (0)  
     mov rsi, rsp  
-    mov rax, 0  
+    mov rax, SYS_READ 
     syscall 
     pop rax                               
     ret
@@ -168,7 +172,7 @@ read_word:
     push r14 ; 16
     mov r12, rdi ; адрес начала буфера
     mov r13, rsi ; размер буфера
-    xor r14, r14 ; Длина буфера
+    xor r14, r14 ; длина слова
     dec r13 ; резервируем место для нуль-терминанта
     .loop_spaces:
         call read_char ; читаем символ 
@@ -199,17 +203,27 @@ read_word:
         mov byte [r12 + r14], 0 ; добавляем нуль-терминант
         mov rdx, r14 ; rdx = длина слова
         mov rax, r12
-        pop r14
-        pop r13
-        pop r12
-        ret
+        jmp .finally
     .buffer_overflow:
         xor rdx, rdx
         xor rax, rax 
+    .finally
         pop r14
         pop r13
         pop r12
-        ret   
+        ret  
+
+; rdi - указатель на буфер rsi - длина буфера
+; Возвращает длину считанной строки в rax.
+read_string:
+	mov rax, SYS_READ
+	mov rdx, rsi				
+	mov rsi, rdi				
+	mov rdi, STDIN
+	syscall
+	
+	mov byte[rsi + rax - 1], 0
+	ret
 
 ; Принимает указатель на строку, пытается
 ; прочитать из её начала беззнаковое число.
@@ -220,6 +234,8 @@ parse_uint:
     xor rdx, rdx 
     xor r10, r10 ; для хранения числа
     xor r9, r9 ; Счетчик символов
+    cmp byte [rdi+r9], 0
+    je .begin_zero
     .loop_digit:
         mov r10b, byte [rdi + r9] ; байт из строки  
         sub r10b, '0' ; преобразование ASCII в число
@@ -238,10 +254,14 @@ parse_uint:
 
         add rax, r10  ; добавляем текущую цифру               
         inc r9 ; Увеличиваем счетчик
-        jmp .loop_digit             
+        jmp .loop_digit  
+    .begin_zero:  ; возвращаем 0, если число в начале строки равно 0
+        xor rax, rax            
+        mov rdx, 1     
     .end:
         mov rdx, r9  
         ret
+    
 
 
 ; Принимает указатель на строку, пытается
@@ -253,7 +273,7 @@ parse_int:
     xor rdx, rdx ;       
     cmp byte [rdi], '-'   
     je .negative 
-    cmp byte [rdi], 0    
+    cmp byte [rdi], '0'    
     je .endnull     
     .positive:
         sub rsp, 8 ; 16
@@ -265,6 +285,8 @@ parse_int:
         sub rsp, 8 ; 16
         call parse_uint
         add rsp, 8
+        cmp rdx, 0              ; Проверим есть ли между знаком и числом были какие-то символы. 
+        je .err
         neg rax
         inc rdx ; увеличиваем длину на 1
     .end: 
@@ -273,6 +295,10 @@ parse_int:
         xor rax, rax
         mov rdx, 1
         ret  
+    .err:
+        xor rdx, rdx
+        ret
+       
 
 ; Принимает указатель на строку, указатель на буфер и длину буфера
 ; Копирует строку в буфер
@@ -293,6 +319,8 @@ string_copy:
         inc rcx 
         jmp .loop_string 
     .end_null: 
-        xor rax, rax 
+        xor rax, rax
+        ret 
     .end: 
+        mov rax, rcx
         ret
