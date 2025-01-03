@@ -12,9 +12,6 @@ global find_word
 find_word:
     push rsi
     push rdi
-    
-    test rsi, rsi
-    jz .not_found
 
     lea rsi, [rsi + 8]
     sub rsp, 8
