@@ -10,24 +10,22 @@ global find_word
 ; Пройдёт по всему словарю в поисках подходящего ключа. Если подходящее вхождение найдено, вернёт
 ; адрес начала вхождения в словарь (не значения), иначе вернёт 0.
 find_word:
-.loopik:
     push rdi
     push rsi
-
     lea rsi, [rsi + 8]
     sub rsp, 8
     call string_equals
     add rsp, 8
-    cmp rax, 1
-    jne .skip
-    mov rax, rsi
-    ret
-.skip:
-    mov rsi, [rsi]
-    test rsi, rsi
-    jnz .loopik
-    xor rax, rax
-.exit:
     pop rsi
     pop rdi
+    cmp rax, 1
+    je .found
+.not_found:
+    mov rsi, [rsi]
+    test rsi, rsi
+    jnz find_word
+    xor rax, rax
+    ret
+.found:
+    mov rax, rsi
     ret
