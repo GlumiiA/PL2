@@ -1,63 +1,55 @@
-%include "lib.inc"
+section .rodata
 %include "words.inc"
+%include "lib.inc"
 %include "dict.inc"
 
-global _start
+%define SIZE_BUFFER 256 ; Читает строку размером не более 255 символов + нуль-терминант
+%define STDIN 0
+%define SYS_READ 0
 
-section .rodata
-prompt: db "Введите ключ:", `\n`, "> ", 0
-bof_message: db "Ошибка: введённый ключ должен быть длиной не более 255 символов", `\n`, 0
-not_found_message: db "Ключ не найден", `\n`, 0
-
-%define dict_start first_word
+section .data
+message_error_find: db "dictionary entry not found", "\n", 0
+message_error_read: db "string is empty", "\n", 0
 
 section .text
 
+global _start
+
 _start:
-    mov rdi, prompt
-    sub rsp, 8
-    call print_string
+;Читает строку размером не более 255 символов в буфер с stdin.
+; Пытается найти вхождение в словаре; если оно найдено, распечатывает в stdout значение по этому ключу.
+; Иначе выдает сообщение об ошибке.
+.reading:
+    sub rsp, SIZE_BUFFER ; выделения места на стеке для строки
+    mov rdi, rsp
+    mov rsi, SIZE_BUFFER
+    sub rsp, 8 ; выравниваем стек
+    call read_string
     add rsp, 8
     
-    sub rsp, 256
-    mov rdi, rsp
-    mov rsi, 256
-    sub rsp, 8
-    call read_line
-    add rsp, 8
     test rax, rax
-    jz .bof
-
-    push rdx
-    mov rsi, dict_start
-    mov rdi, rax
+    jz .not_find
+    
+    lea r13, [rax - 1]
+    mov rdi, rsp ; Указатель на нуль-терминированную строку.
+    mov rsi, DICT_BEGIN ; Указатель на начало словаря.
     call find_word
-    test rax, rax
-    jz .fail
-
-    .success:
-
-    pop rdi
-    lea rdi, [rdi + rax + 9]
-    sub rsp, 8
+    test rax, rax ; если не нашёл
+    jz .not_find
+.print_string:
+    lea rdi, [r13 + rax + 8 + 1]
+    ; значение по ключю в rdi
     call print_string
-    call print_newline
-    add rsp, 8
-    xor rdi, rdi
-    call exit
-
-    .fail:
-    mov rdi, not_found_message
-    sub rsp, 8
-    call print_string
-    add rsp, 8
-    xor rdi, rdi
-    call exit
-
-    .bof:
-    mov rdi, bof_message
-    sub rsp, 8
+    jmp .exit
+.not_read:
+    mov rdi, message_error_read
     call print_err
+    jmp .exit
+.not_find:
+    mov rdi, message_error_find
+    call print_err
+.exit:
     add rsp, 8
-    mov rdi, -1
+    add rsp, SIZE_BUFFER
+    xor rdi, rdi
     call exit
