@@ -10,28 +10,21 @@ global find_word
 ; Пройдёт по всему словарю в поисках подходящего ключа. Если подходящее вхождение найдено, вернёт
 ; адрес начала вхождения в словарь (не значения), иначе вернёт 0.
 find_word:
-    push rsi
     push rdi
-
+    push rsi
     lea rsi, [rsi + 8]
     sub rsp, 8
     call string_equals
     add rsp, 8
+    pop rsi
+    pop rdi
     cmp rax, 1
     jne .skip
     mov rax, rsi
     ret
-    .skip:
+.skip:
     mov rsi, [rsi]
     test rsi, rsi
     jnz find_word
-    pop rdi
-    pop rsi
     xor rax, rax
-    ret
-
-.not_found:
-    xor rax, rax
-    pop rdi
-    pop rsi
     ret
