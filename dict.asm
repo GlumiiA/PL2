@@ -27,7 +27,7 @@ find_word:
     .skip:
     mov rsi, [rsi]
     test rsi, rsi
-    jnz .loop
+    jnz find_word
     pop rdi
     pop rsi
     xor rax, rax
