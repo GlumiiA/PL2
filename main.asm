@@ -8,9 +8,9 @@ section .rodata
 %define SYS_READ 0
 
 section .data
-message_error_find: db "dictionary entry not found", "\n", 0
-message_error_read: db "string is empty", "\n", 0
-message_hello: db "Hello! Enter the key: ", "\n", 0
+message_error_find: db "dictionary entry not found", `\n`, 0
+message_error_read: db "string is empty", `\n`, 0
+message_hello: db "Hello! Enter the key: ", `\n`, 0
 
 section .text
 
@@ -52,8 +52,6 @@ add rsp, 8
     call print_err
     jmp .exit
 .not_find:
-    mov rdi, message_hello
-    call print_string
     mov rdi, message_error_find
     call print_err
 .exit:
