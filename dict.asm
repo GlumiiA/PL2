@@ -13,11 +13,10 @@ find_word:
     push rsi
     push rdi
     
-.loop:
     test rsi, rsi
     jz .not_found
 
-     lea rsi, [rsi + 8]
+    lea rsi, [rsi + 8]
     sub rsp, 8
     call string_equals
     add rsp, 8
