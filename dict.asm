@@ -12,6 +12,11 @@ global find_word
 find_word:
     push rdi
     push rsi
+
+    ; Проверяем, не нулевой ли указатель на текущий элемент
+    test rsi, rsi
+    jz .found
+
     lea rsi, [rsi + 8]
     sub rsp, 8
     call string_equals
