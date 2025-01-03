@@ -23,14 +23,16 @@ find_word:
     add rsp, 8
     pop rsi
     pop rdi
+    ; Если строки равны, возвращаем адрес найденного слова
     cmp rax, 1
     je .found
 .not_found:
+    ; переходим к следующему элементу в словаре
     mov rsi, [rsi]
     test rsi, rsi
     jnz find_word
     xor rax, rax
     ret
 .found:
-    mov rax, rsi
+    mov rax, rsi ; Возвращаем адрес найденного слова
     ret
