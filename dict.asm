@@ -18,17 +18,21 @@ find_word:
     jz .not_found
 
     lea rsi, [rsi + 8]
-
     sub rsp, 8
     call string_equals
     add rsp, 8
-
+    pop rsi
+    pop rdi
     cmp rax, 1
-    je .found
-
+    jne .skip
+    mov rax, rsi
+    ret
+.skip:
     mov rsi, [rsi]
     test rsi, rsi
     jnz .loop
+    xor rax, rax
+    ret
 
 .not_found:
     xor rax, rax
