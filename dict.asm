@@ -7,21 +7,33 @@ global find_word
 ; В rdi - адрес нуль-терминированной строки
 ; В rsi - адрес начала словаря
 find_word:
-    push rdi
     push rsi
-    lea rsi, [rsi + 8]
-    sub rsp, 8
+    push rdi
+    
+.loop:
+    mov rax, [rsi]
+    test rax, rax
+    jz .not_found
+
+    push rax
+    mov rdi, rax
     call string_equals
-    add rsp, 8
-    pop rsi
-    pop rdi
+    pop rax
+
     cmp rax, 1
-    jne .skip
-    mov rax, rsi
+    je .found
+
+    add rsi, 8
+    jmp .loop
+
+.found:
+    mov rax, [rsi]
+    pop rdi
+    pop rsi
     ret
-    .skip:
-    mov rsi, [rsi]
-    test rsi, rsi
-    jnz find_word
+
+.not_found:
     xor rax, rax
+    pop rdi
+    pop rsi
     ret
