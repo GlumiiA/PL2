@@ -57,7 +57,7 @@ _start:
     .bof:
     mov rdi, bof_message
     sub rsp, 8
-    call print_error
+    call print_err
     add rsp, 8
     mov rdi, -1
     call exit
